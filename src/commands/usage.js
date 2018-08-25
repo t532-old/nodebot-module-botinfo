@@ -1,7 +1,7 @@
 import Monk from 'monk'
 import { safeLoad } from 'js-yaml'
 import { readFileSync } from 'fs'
-const { databaseAddress, operators } = safeLoad(readFileSync('config/config.yml'))
+const { databaseAddress } = safeLoad(readFileSync('config/config.yml'))
 const db = Monk(`${databaseAddress}/botdb`)
 const data = db.get('analytics')
 export default {
@@ -19,7 +19,7 @@ export default {
         let query = { messageType: msg.type, messageTarget: msg.target }, result = []
         for (let i in methods) {
             if (methods[i] === 'filter') {
-                if (operators.includes(msg.param.user_id) && msg.type === 'private') {
+                if (msg.static().config.operators.includes(msg.param.user_id) && msg.type === 'private') {
                     query = {}
                     for (let j of queries) {
                         const converted = j.split('=')
